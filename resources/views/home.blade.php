@@ -17,7 +17,7 @@
                                 <input type="number"
                                         name="value"
                                         class="form-control"
-                                        min="5"
+                                        min="1"
                                         step="0.01"
                                         value="{{ mt_rand(500, 1000000) / 100 }}"
                                 >

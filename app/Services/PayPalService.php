@@ -41,26 +41,26 @@ class PayPalService
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
-        // session()->put('approvalId', $order->id);
+        session()->put('approvalId', $order->id);
         return redirect($approve->href);
     }
 
     public function handleApproval()
     {
-        // if (session()->has('approvalId')) {
-        //     $approvalId = session()->get('approvalId');
-        //     $payment = $this->capturePayment($approvalId);
-        //     $name = $payment->payer->name->given_name;
-        //     $payment = $payment->purchase_units[0]->payments->captures[0]->amount;
-        //     $amount = $payment->value;
-        //     $currency = $payment->currency_code;
+        if (session()->has('approvalId')) {
+            $approvalId = session()->get('approvalId');
+            $payment = $this->capturePayment($approvalId);
+            $name = $payment->payer->name->given_name;
+            $payment = $payment->purchase_units[0]->payments->captures[0]->amount;
+            $amount = $payment->value;
+            $currency = $payment->currency_code;
 
-        //     return redirect()
-        //         ->route('home')
-        //         ->withSuccess(['payment' => "Thanks, {$name}. We received your {$amount}{$currency} payment."]);
-        //}
+            return redirect()
+                ->route('home')
+                ->withSuccess(['payment' => "Thanks, {$name}. We received your {$amount}{$currency} payment."]);
+        }
 
-        //return redirect()->route('home')->withErrors('We cannot capture your payment. Try again');
+        return redirect()->route('home')->withErrors('We cannot capture your payment. Try again');
     }
 
     public function createOrder($value, $currency)
@@ -94,15 +94,15 @@ class PayPalService
 
     public function capturePayment($approvalId)
     {
-        // return $this->makeRequest(
-        //     'POST',
-        //     "/v2/checkout/orders/{$approvalId}/capture",
-        //     [],
-        //     [],
-        //     [
-        //         'Content-Type' => 'application/json',
-        //     ]
-        // );
+        return $this->makeRequest(
+            'POST',
+            "/v2/checkout/orders/{$approvalId}/capture",
+            [],
+            [],
+            [
+                'Content-Type' => 'application/json',
+            ]
+        );
     }
 
     public function resolveFactor($currency)

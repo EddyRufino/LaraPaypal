@@ -10,7 +10,7 @@ class PaymentController extends Controller
     public function pay(Request $request)
     {
     	$rules = [
-    		'value' => ['required', 'numeric', 'min:5'],
+    		'value' => ['required', 'numeric', 'min:1'],
     		'currency' => ['required', 'exists:currencies,iso'],
     		'payment_platform' => ['required', 'exists:payment_platforms,id'],
     	];
@@ -30,6 +30,6 @@ class PaymentController extends Controller
 
     public function cancelled()
     {
-    	//
+    	return redirect()->route('home')->withErrors('Pago cancelado');
     }
 }
